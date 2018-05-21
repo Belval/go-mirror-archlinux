@@ -1,0 +1,11 @@
+{
+    "PORT": 80,
+    "REPO_DIRECTORY": "/home/go-mirror-archlinux/",
+    "PRIMARY_SERVER": "rsync://mirror.csclub.uwaterloo.ca/archlinux/",
+    "BACKUP_SERVER": "rsync://mirror.sergal.org/archlinux/",
+    "BANDWIDTH_LIMIT_KB": 0,
+    "SYNC_INTERVAL_HOURS": 2,
+    "SYNC_ISO": true,
+    "SYNC_OTHER": true,
+    "SYNC_SOURCES": true
+}
