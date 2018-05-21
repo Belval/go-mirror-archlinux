@@ -1,5 +1,5 @@
 {
-    "PORT": 80,
+    "PORT": 8081,
     "REPO_DIRECTORY": "/home/go-mirror-archlinux/",
     "PRIMARY_SERVER": "rsync://mirror.csclub.uwaterloo.ca/archlinux/",
     "BACKUP_SERVER": "rsync://mirror.sergal.org/archlinux/",
