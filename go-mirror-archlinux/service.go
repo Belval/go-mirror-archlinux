@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"net/http"
 	"os"
 	"os/exec"
@@ -10,13 +11,14 @@ import (
 )
 
 func rsyncArgsBuilder(useBackupServer bool) []string {
-	args := make([]string, 1)
+	args := make([]string, 0)
 	args = append(args, "-rtlH")
 	args = append(args, "--safe-links")
 	args = append(args, "--delete-after")
 	args = append(args, "--timeout=600")
+	args = append(args, "--quiet")
 	if config.BandwidthLimit > 0 {
-		args = append(args, "--bwlimit="+string(config.BandwidthLimit))
+		args = append(args, "--bwlimit="+strconv.Itoa(config.BandwidthLimit))
 	}
 	args = append(args, "--exclude='*.links.tar.gz*'")
 	if !config.SyncISO {
@@ -35,19 +37,16 @@ func rsyncArgsBuilder(useBackupServer bool) []string {
 		args = append(args, config.PrimaryServer)
 		fmt.Println(config.PrimaryServer)
 	}
-	fmt.Println(config.RepoDirectory)
 	args = append(args, config.RepoDirectory)
-	args = append(args, "--quiet")
 	return args
 }
 
 func synchronize() {
 	fmt.Println("Syncing...")
-	fmt.Println(rsyncArgsBuilder(false))
 	if err := exec.Command("rsync", rsyncArgsBuilder(false)...).Run(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Println(err)
 		if err := exec.Command("rsync", rsyncArgsBuilder(true)...).Run(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			fmt.Println(err)
 			os.Exit(1)
 		}
 	}
@@ -55,7 +54,10 @@ func synchronize() {
 }
 
 func serve() {
+	fmt.Println("Initial sync")
+	synchronize()
+	fmt.Println("Mirror should be up and running")
 	gocron.Every(uint64(config.SyncInterval)).Hours().Do(synchronize)
 	http.Handle("/", http.FileServer(http.Dir(config.RepoDirectory)))
-	http.ListenAndServe(":"+string(config.Port), nil)
+	fmt.Println(http.ListenAndServe(":"+strconv.Itoa(config.Port), nil))
 }
