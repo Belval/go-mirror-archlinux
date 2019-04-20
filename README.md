@@ -1,6 +1,8 @@
 # go-mirror-archlinux
 A go project to quickly setup an Archlinux mirror with automatic updating.
 
+You can skip everything below by running `docker run -d -p 4000:8081 belval/go-mirror-archlinux:0.1`
+
 ## Requirements
 
 - rsync
